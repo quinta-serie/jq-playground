@@ -45,7 +45,6 @@ class JQPlayground(QWidget):
             border: none;
             border-radius: 5px;
             padding: 10px 20px;
-            cursor: pointer;
             """
         )
 

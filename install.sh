@@ -1,25 +1,43 @@
 #!/bin/bash
 
-APP_NAME="jq-playground"
-TARGET_FILE="jq_playground.py"
-INSTALL_PATH="/usr/local/bin"
+set -e
 
-# Obtém o caminho absoluto do diretório atual
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET_PATH="$SCRIPT_DIR/$TARGET_FILE"
+APP_NAME="jq-playground"
+INSTALL_PATH="/usr/local/bin"
+SCRIPT_NAME="jq-playground"
+PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+VENV_DIR="$PROJECT_DIR/.venv"
+WRAPPER_PATH="$PROJECT_DIR/$SCRIPT_NAME"
 LINK_PATH="$INSTALL_PATH/$APP_NAME"
 
-# Verifica se o arquivo alvo existe
-if [ ! -f "$TARGET_PATH" ]; then
-    echo "Error: $TARGET_FILE not found in $SCRIPT_DIR"
-    exit 1
+echo "🔧 Setting up environment..."
+
+if [ ! -d "$VENV_DIR" ]; then
+  echo "📦 Creating virtual environment at .venv..."
+  python3 -m venv "$VENV_DIR"
+else
+  echo "✅ Virtual environment already exists."
 fi
 
-# Cria o link simbólico
-echo "Creating symlink: $LINK_PATH -> $TARGET_PATH"
-sudo ln -sf "$TARGET_PATH" "$LINK_PATH"
+echo "📦 Installing Python dependencies..."
+source "$VENV_DIR/bin/activate"
+pip install --upgrade pip
+pip install -r "$PROJECT_DIR/requirements.txt"
+deactivate
 
-# Torna o script executável
-chmod +x "$TARGET_PATH"
+echo "⚙️ Generating launcher script..."
 
-echo "✅ Installed! You can now run the app using: $APP_NAME"
+cat << EOF > "$WRAPPER_PATH"
+#!/bin/bash
+cd "$PROJECT_DIR"
+source "$VENV_DIR/bin/activate"
+python jq_playground.py &
+EOF
+
+chmod +x "$WRAPPER_PATH"
+
+echo "🔗 Creating symlink at $LINK_PATH..."
+sudo ln -sf "$WRAPPER_PATH" "$LINK_PATH"
+
+echo "✅ Installation complete!"
+echo "🚀 You can now run the app from anywhere using: $APP_NAME"

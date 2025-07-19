@@ -37,10 +37,10 @@ Perfect for quickly experimenting with `jq` queries locally.
 2. (Optional) Create and activate a virtual environment:
 
     ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # macOS/Linux
+    python3 -m venv .venv
+    source .venv/bin/activate  # macOS/Linux
     # or
-    venv\Scripts\activate     # Windows
+    .venv\Scripts\activate     # Windows
     ```
 
 3. Install Python dependencies:

@@ -66,13 +66,21 @@ class JQPlayground(QWidget):
         jq_command = self.jq_input.toPlainText()
 
         if not json_text.strip():
-            QMessageBox.warning(
-                self, "Aviso", "Você precisa fornecer um JSON válido.")
+            alert = QMessageBox()
+            alert.setIcon(QMessageBox.Icon.Critical)
+            alert.setText("JSON inválido")
+            alert.setInformativeText("Você precisa fornecer um JSON válido.")
+            alert.setWindowTitle("Aviso")
+            alert.exec()
             return
 
         if not jq_command.strip():
-            QMessageBox.warning(
-                self, "Aviso", "Você precisa fornecer um comando jq.")
+            alert = QMessageBox()
+            alert.setIcon(QMessageBox.Icon.Critical)
+            alert.setText("Comando JQ inválido")
+            alert.setInformativeText("Você precisa fornecer um comando jq válido.")
+            alert.setWindowTitle("Aviso")
+            alert.exec()
             return
 
         try:
